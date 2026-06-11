@@ -1,0 +1,39 @@
+<launch>
+
+  <!-- Load URDF into parameter server -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro
+                  $(find arm_kinematics)/urdf/six_axis_arm.urdf.xacro"/>
+
+  <!-- Robot state publisher: broadcasts TF from URDF + joint states -->
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        respawn="false" output="screen"/>
+
+  <!-- Joint state publisher GUI: sliders to move joints manually -->
+  <node name="joint_state_publisher_gui"
+        pkg="joint_state_publisher_gui"
+        type="joint_state_publisher_gui"
+        output="screen"/>
+
+  <!-- TF2 broadcaster node -->
+  <node name="tf2_broadcaster"
+        pkg="arm_kinematics"
+        type="tf2_broadcaster.py"
+        respawn="false" output="screen"/>
+
+  <!-- Arm controller node -->
+  <node name="arm_controller"
+        pkg="arm_kinematics"
+        type="arm_controller.py"
+        respawn="false" output="screen"/>
+
+  <!-- RViz -->
+  <node name="rviz"
+        pkg="rviz"
+        type="rviz"
+        args="-d $(find arm_kinematics)/rviz/arm_view.rviz"
+        output="screen"/>
+
+</launch>

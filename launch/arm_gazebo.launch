@@ -1,0 +1,66 @@
+<launch>
+
+  <arg name="paused"    default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui"       default="true"/>
+  <arg name="debug"     default="false"/>
+
+  <!-- Simulation time -->
+  <param name="use_sim_time" value="$(arg use_sim_time)"/>
+
+  <!-- Load URDF -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro
+                  $(find arm_kinematics)/urdf/six_axis_arm.urdf.xacro"/>
+
+  <!-- Launch Gazebo empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug"        value="$(arg debug)"/>
+    <arg name="gui"          value="$(arg gui)"/>
+    <arg name="paused"       value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless"     value="false"/>
+  </include>
+
+  <!-- Spawn robot in Gazebo -->
+  <node name="spawn_urdf"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-unpause
+              -urdf
+              -model six_axis_arm
+              -param robot_description"
+        respawn="false" output="screen"/>
+
+  <!-- Load controllers config -->
+  <rosparam file="$(find arm_kinematics)/config/controllers.yaml"
+            command="load"/>
+
+  <!-- Start controllers -->
+  <node name="controller_spawner"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false" output="screen"
+        args="joint_state_controller arm_position_controller"/>
+
+  <!-- Robot state publisher -->
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        respawn="false" output="screen">
+    <param name="publish_frequency" value="50.0"/>
+  </node>
+
+  <!-- TF2 broadcaster -->
+  <node name="tf2_broadcaster"
+        pkg="arm_kinematics"
+        type="tf2_broadcaster.py"
+        respawn="false" output="screen"/>
+
+  <!-- Arm controller -->
+  <node name="arm_controller"
+        pkg="arm_kinematics"
+        type="arm_controller.py"
+        respawn="false" output="screen"/>
+
+</launch>
