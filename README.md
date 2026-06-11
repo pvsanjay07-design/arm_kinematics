@@ -59,4 +59,4 @@ roslaunch arm_kinematics arm_simulation.launch
 - Real Robot Deployment
 
 ## Author
-Sanjay
+Sanjay P V 
