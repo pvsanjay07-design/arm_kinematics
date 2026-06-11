@@ -26,19 +26,37 @@ The robotic arm is modeled using URDF/Xacro and controlled through ROS controlle
 - RViz
 - URDF/Xacro
 - TF2
-- NumPy
-- SciPy
+
+## Project Structure
+
+- `config/` – Controller and joint configuration
+- `launch/` – ROS launch files
+- `rviz/` – RViz visualization settings
+- `scripts/` – IK, controller and trajectory planner scripts
+- `urdf/` – Robot model definition
+- `src/` – Python package source
 
 ## Running the Project
 
 ```bash
+catkin_make
+source devel/setup.bash
 roslaunch arm_kinematics arm_simulation.launch
 ```
 
 ## Applications
 
 - Industrial Automation
-- Pick and Place Operations
-- Robotic Manipulation
+- Pick and Place Systems
 - Educational Robotics
 - Motion Planning Research
+
+## Future Enhancements
+
+- MoveIt Integration
+- Collision Avoidance
+- Vision-Based Object Detection
+- Real Robot Deployment
+
+## Author
+Sanjay
